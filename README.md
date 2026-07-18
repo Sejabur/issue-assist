@@ -1,4 +1,4 @@
-# IssueAssist - Lightweight IT Operations & Incident Management Dashboard
+# issue-assist - Lightweight IT Operations & Incident Management Dashboard
 
 > A purpose-built operations dashboard for small IT teams managing internal issue resolution, role-based task routing, and incident audit trails - designed as a practical alternative to enterprise ITSM tools for organizations that can't afford ServiceNow.
 
