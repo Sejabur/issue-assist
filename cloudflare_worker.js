@@ -1,14 +1,28 @@
 export default {
   async fetch(request, env) {
-    // These environment variables must be configured in your Cloudflare Worker Settings
-    const JSONBIN_URL = env.JSONBIN_URL; // e.g. "https://api.jsonbin.io/v3/b/YOUR_BIN_ID"
-    const MASTER_KEY = env.MASTER_KEY;   // e.g. "$2a$10$YOUR_SECRET_KEY"
+    const JSONBIN_URL = env.JSONBIN_URL; 
+    const MASTER_KEY = env.MASTER_KEY;   
+    
+    // SECURITY LAYER 1: Define your allowed domain
+    const ALLOWED_ORIGIN = "https://issue-assist.sejabur.dev";
+    
+    // Get the origin of the person making the request
+    const requestOrigin = request.headers.get("Origin");
+
+    // SECURITY LAYER 2: Block requests that don't come from your website
+    // (We allow requests with no origin just in case, but block wrong domains)
+    if (requestOrigin && requestOrigin !== ALLOWED_ORIGIN) {
+      return new Response(JSON.stringify({ error: "Forbidden: Unauthorized Origin" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
 
     // Handle CORS Preflight (OPTIONS request)
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
-          "Access-Control-Allow-Origin": "*", // Change "*" to your URL for extra security (e.g. "https://issue-assist.io")
+          "Access-Control-Allow-Origin": ALLOWED_ORIGIN, 
           "Access-Control-Allow-Methods": "GET, PUT, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Max-Age": "86400",
@@ -16,7 +30,6 @@ export default {
       });
     }
 
-    // Prepare headers for the JSONBin request
     const jsonbinHeaders = new Headers();
     jsonbinHeaders.set("X-Master-Key", MASTER_KEY);
     
@@ -25,22 +38,19 @@ export default {
       headers: jsonbinHeaders,
     };
 
-    // If it's a PUT request, pass along the body data and Content-Type
     if (request.method === "PUT") {
       jsonbinHeaders.set("Content-Type", "application/json");
       fetchOptions.body = await request.clone().text();
     }
 
     try {
-      // Forward the request to JSONBin
       const response = await fetch(JSONBIN_URL, fetchOptions);
       const data = await response.text();
 
-      // Return the JSONBin response back to the frontend with CORS headers
       return new Response(data, {
         status: response.status,
         headers: {
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": ALLOWED_ORIGIN, // Lock responses to your domain
           "Content-Type": "application/json",
         },
       });
@@ -48,7 +58,7 @@ export default {
       return new Response(JSON.stringify({ error: "Proxy Request Failed" }), {
         status: 500,
         headers: {
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
           "Content-Type": "application/json",
         },
       });
