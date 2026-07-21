@@ -2,8 +2,10 @@
 
 > **[🌐 View Live Deployment](https://issue-assist.sejabur.dev)**
 
-## Executive Summary
+## Summary
 issue-assist is an enterprise-inspired IT operations platform designed for small and mid-sized organizations that require rapid incident coordination without the complexity of traditional ITSM suites. The platform emphasizes operational visibility, lightweight deployment, and high-velocity incident response through a serverless architecture and role-based collaboration model.
+
+<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/62d9be71-54d4-4929-a06f-e9a1089feed6" />
 
 ## The Problem & Why This Product?
 **The Problem:** Enterprise ITSM platforms such as ServiceNow are designed for large organizations and often require substantial configuration, administrative overhead, and licensing costs that may exceed the needs of smaller IT teams. When urgent incidents occur, rapid-response network operations centers (NOCs) frequently revert to static spreadsheets because legacy tools are too slow. This reliance on spreadsheets leads to missed deadlines, communication silos, and dangerous data collisions.
